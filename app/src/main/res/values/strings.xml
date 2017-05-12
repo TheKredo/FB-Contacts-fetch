@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Fbfriendslist</string>
+
+    <string name="title_activity_home_page">HomePage</string>
+    <string name="title_activity_friends_list">FriendsList</string>
+    <string name="facebook_app_id">1304351282947337</string>
+
+    <string name="fb_login_protocol_scheme">fb1304351282947337</string>
+
+</resources>
