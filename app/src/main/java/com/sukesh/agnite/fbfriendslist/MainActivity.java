@@ -5,6 +5,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -22,6 +24,8 @@ import com.facebook.login.widget.LoginButton;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     CallbackManager callbackManager;
@@ -29,18 +33,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        facebookSDKInitialize();
         setContentView(R.layout.activity_main);
+        facebookSDKInitialize();
         LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("user_friends");
         getLoginDetails(loginButton);
 
-
     }
 
-    /*
-     * Register a callback function with LoginButton to respond to the login result.
-     */
     protected void getLoginDetails(LoginButton login_button){
 
         // Callback registration
@@ -55,17 +55,27 @@ public class MainActivity extends AppCompatActivity {
                         HttpMethod.GET,
                         new GraphRequest.Callback() {
                             public void onCompleted(GraphResponse response) {
-                                Intent intent = new Intent(MainActivity.this,FriendsList.class);
+
                                 try {
                                     JSONArray rawName = response.getJSONObject().getJSONArray("data");
-                                    intent.putExtra("jsondata", rawName.toString());
-                                    startActivity(intent);
+                                    JSONArray friendslist;
+                                    ArrayList<String> friends = new ArrayList<String>();
+                                    friendslist = new JSONArray(rawName.toString());
+                                    for (int l=0; l < friendslist.length(); l++) {
+                                        friends.add(friendslist.getJSONObject(l).getString("name"));
+                                    }
+                                    ArrayAdapter adapter = new ArrayAdapter<String>(MainActivity.this,
+                                            android.R.layout.simple_list_item_1, friends);
+                                    ListView listView = (ListView) findViewById(R.id.listView);
+                                    listView.setAdapter(adapter);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                             }
                         }
                 ).executeAsync();
+
+
 
             }
 
